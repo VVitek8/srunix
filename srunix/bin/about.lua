@@ -46,4 +46,4 @@ sprc(colors.cyan, "  Disk:      " .. math.floor(used/1024) .. " KB used / " .. m
 sprc(colors.cyan, "  Display:     " .. term.getSize() .. " (text)")
 sprc(colors.cyan, "  Graphics:    " .. (term.setGraphicsMode and "CC:Graphics (256 colors)" or "missing"))
 sprc(colors.cyan, "  GPU:        " .. (peripheral.find("tm_gpu") and "Tom's Peripherals" or "missing"))
-sprc(colors.cyan, "  Rednet:     " .. (rednet.isOpen() and "открыт" or "закрыт"))
+sprc(colors.cyan, "  Rednet:     " .. (rednet.isOpen() and "opened" or "closed"))
