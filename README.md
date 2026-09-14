@@ -16,28 +16,11 @@ Written in pure Lua, no external dependencies.
 Srunix is a hobby OS that tries to bring a Linux/Windows hybrid feel
 to CC:Tweaked computers. It provides a full shell with users, groups,
 file permissions, a virtual file system, a package manager stub, and
-its own PNG/BMP image decoder - all running on pure Lua inside the game.
+its own PNG/BMP image decoder — all running on pure Lua inside the game.
 
 The project is designed to be modular: the kernel, shell, and every
 userland command live in separate files, so you can add new programs
 by dropping a `.lua` file into `/srunix/bin/`.
-
-## Features
-
-- **Monolithic kernel** in pure Lua (no external libraries)
-- **Virtual File System (VFS)** - mounted as `C:\` (real disk) and `SYS:\` (`/srunix`)
-- **Users and groups** - uid/gid, `/etc/passwd`, `/etc/shadow`, `/etc/group`
-- **File permissions** - full rwx bits for owner/group/other, `chmod`, `chown`
-- **Shell** with command history (Up/Down), Tab autocomplete, ghost text
-- **Russian keyboard layout support** - key events are layout-independent
-- **Scrolling** in the terminal with mouse wheel + scrollbar
-- **Package manager stub** (`spm`) - ready for pastebin / GitHub integration
-- **Image viewer** (`pic`) - list, random, last; auto-converts PNG/BMP to NFP
-- **Own PNG/BMP decoder** - written from scratch (inflate, filters, palette)
-- **256-color graphics support** via CC:Graphics
-- **Tom's Peripherals GPU** integration for true RGB images
-- **Fully working `help`** with detailed per-command docs
-- **Bootloader** and multi-stage boot
 
 ## Requirements
 
@@ -50,14 +33,31 @@ by dropping a `.lua` file into `/srunix/bin/`.
 ## Installation
 
 1. Place a Computer block in Minecraft and open it.
-2. In the CraftOS prompt, run `edit install.lua`.
-3. Paste the installer script (see `install.lua` in this repository).
-4. Save with **Ctrl -> Save -> Exit**.
-5. Run the installer: `install`
-6. Reboot: `reboot`
+2. In the CraftOS prompt, run:
+
+```
+wget run https://raw.githubusercontent.com/VVitek8/srunix/main/install.lua
+```
+
+3. Wait for the installer to download all system files.
+4. Reboot:
+
+```
+reboot
+```
 
 You should see the Srunix boot loader, then the login prompt.
 Default user is `root` (no password).
+
+### Manual installation
+
+If `wget` is unavailable, you can install manually:
+
+1. Run `edit install.lua` in CraftOS.
+2. Paste the contents of `install.lua` from this repository.
+3. Save with **Ctrl -> Save -> Exit**.
+4. Run `install`.
+5. Reboot.
 
 ## Quick start
 
@@ -83,23 +83,23 @@ colorall reset          # back to normal
 ## File layout
 
 ```
-/                       - real CC:Tweaked disk root
-|-- startup.lua         - auto-run on boot
-|-- boot/
-|   `-- boot.lua        - bootloader (loads kernel)
-|-- srunix/             - system (mounted as SYS:)
-|   |-- kernel/
-|   |   |-- init.lua    - kernel entry point
-|   |   |-- vfs.lua     - virtual file system
-|   |   |-- screen.lua  - screen buffer, scrolling, colors
-|   |   |-- shell.lua   - main shell loop
-|   |   |-- users.lua   - users, groups, permissions
-|   |   `-- utils.lua   - helpers, color tables
-|   |-- bin/            - userland commands (add .lua here)
-|   |-- etc/            - passwd, shadow, group, perms
-|   |-- var/log/        - log files
-|   `-- home/           - user home directories
-`-- programs/           - third-party packages
+/                       — real CC:Tweaked disk root
+├── startup.lua         — auto-run on boot
+├── boot/
+│   └── boot.lua        — bootloader (loads kernel)
+├── srunix/             — system (mounted as SYS:)
+│   ├── kernel/
+│   │   ├── init.lua    — kernel entry point
+│   │   ├── vfs.lua     — virtual file system
+│   │   ├── screen.lua  — screen buffer, scrolling, colors
+│   │   ├── shell.lua   — main shell loop
+│   │   ├── users.lua   — users, groups, permissions
+│   │   └── utils.lua   — helpers, color tables
+│   ├── bin/            — userland commands (add .lua here)
+│   ├── etc/            — passwd, shadow, group, perms
+│   ├── var/log/        — log files
+│   └── home/           — user home directories
+└── programs/           — third-party packages
 ```
 
 ## Adding a new command
@@ -154,14 +154,14 @@ Save as `/srunix/bin/hello.lua`, then run `hello` from the shell.
 `pic` reads images from `/images`, `/srunix/images`, or `/programs/images`.
 
 **Supported input formats:**
-- `.nfp` - native Paint format (RGB or 16-color)
-- `.nft` - legacy text format
-- `.png` - 8-bit RGB, RGBA, palette, grayscale (no interlacing)
-- `.bmp` - 24-bit uncompressed
+- `.nfp` — native Paint format (RGB or 16-color)
+- `.nft` — legacy text format
+- `.png` — 8-bit RGB, RGBA, palette, grayscale (no interlacing)
+- `.bmp` — 24-bit uncompressed
 
-**PNG/BMP are decoded inside Srunix** - no external conversion needed.
-Decoding takes a few seconds for a 480x270 image. Larger images may
-be slow or run out of memory; recommended source size is **480x270**.
+**PNG/BMP are decoded inside Srunix** — no external conversion needed.
+Decoding takes a few seconds for a 480×270 image. Larger images may
+be slow or run out of memory; recommended source size is **480×270**.
 
 **GPU acceleration.** If Tom's Peripherals is installed, `pic` uses
 its GPU for 24-bit RGB rendering. Otherwise it falls back to
@@ -170,11 +170,11 @@ CC:Graphics 256-color mode, then to standard 16-color text mode.
 ## Design notes
 
 - **No coroutines for multitasking.** Instead of a hand-rolled
-  scheduler, Srunix uses CC:Tweaked's `parallel.waitForAny` - it
+  scheduler, Srunix uses CC:Tweaked's `parallel.waitForAny` — it
   handles event yielding correctly, including inside `pcall`.
 - **The VFS is a security boundary.** Programs that go through
   `VFS.read` / `VFS.write` are checked. Programs that use the raw
-  `fs` API bypass this - but the shell never passes `fs` into the
+  `fs` API bypass this — but the shell never passes `fs` into the
   user environment, so well-behaved programs stay sandboxed.
 - **Colored output, everywhere.** The screen buffer stores colored
   segments, so word wrapping preserves per-character colors.
@@ -183,17 +183,17 @@ CC:Graphics 256-color mode, then to standard 16-color text mode.
 
 ## Status
 
-This is a hobby project - incomplete, opinionated, and evolving.
+This is a hobby project — incomplete, opinionated, and evolving.
 Some things work, some don't. The code is not battle-tested.
 Contributions and ideas are welcome.
 
 ## License
 
-MIT - see `LICENSE`.
+MIT — see `LICENSE`.
 
 ## Credits
 
-- **CC:Tweaked** - the mod that makes this possible
-- **CC:Graphics** - 256-color support
-- **Tom's Peripherals** - GPU + keyboard
-- **Basalt2** - inspiration for future GUI work
+- **CC:Tweaked** — the mod that makes this possible
+- **CC:Graphics** — 256-color support
+- **Tom's Peripherals** — GPU + keyboard
+- **Basalt2** — inspiration for future GUI work
