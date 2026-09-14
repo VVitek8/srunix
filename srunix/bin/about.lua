@@ -4,7 +4,8 @@ local function col(c) return Srunix.colorOverride or c end
 local function spr(...) local t={} for i=1,select("#",...) do t[i]=tostring(select(i,...)) end SB.addLine(table.concat(t,"\t"), col(colors.white)) end
 local function sprc(c,...) local t={} for i=1,select("#",...) do t[i]=tostring(select(i,...)) end SB.addLine(table.concat(t,"\t"), col(c)) end
 
--- ASCII-арт SRUNIX
+--[[
+-- ASCII-art SRUNIX
 local art = {
 "███████╗██████╗ ██╗   ██╗███╗   ██╗██╗██╗  ██╗",
 "██╔════╝██╔══██╗██║   ██║████╗  ██║██║╚██╗██╔╝",
@@ -18,7 +19,7 @@ for _, line in ipairs(art) do
     sprc(colors.red, line)
 end
 spr("")
-
+]]
 local host = os.getComputerLabel() or ("computer #" .. os.getComputerID())
 local free = fs.getFreeSpace("/") or 0
 local used = 0
